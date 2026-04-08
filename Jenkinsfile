@@ -27,13 +27,17 @@ node {
     docker.image('node:16-buster-slim').inside('-p 3000:3000') {
         
         stage('Deploy') {
-            echo "Melakukan Deployment Lokal..."
+            echo "1. Menembakkan perintah Deploy ke Vercel..."
+            // Jenkins menekan remot Vercel
+            sh "curl -X POST https://api.vercel.com/v1/integrations/deploy/prj_K1MDqlQAXMONQc1rr4k3kGZH6ULD/KxH064jBXh"
+            
+            echo "2. Melakukan Deployment Lokal (Syarat Kriteria 3)..."
             sh './jenkins/scripts/deliver.sh'
             
             echo "Aplikasi berjalan. Menjeda pipeline selama 1 menit..."
             sleep time: 1, unit: 'MINUTES'
             
-            echo "Waktu habis! Menghentikan aplikasi..."
+            echo "Waktu habis! Menghentikan aplikasi lokal..."
             sh './jenkins/scripts/kill.sh'
         }
     } 
