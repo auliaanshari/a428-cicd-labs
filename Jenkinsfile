@@ -23,15 +23,15 @@ node {
         input message: 'Lanjutkan ke tahap Deploy?'
     }
 
-    // Sesi Docker Kedua: Deploy
-    docker.image('node:16-buster-slim').inside('-p 3000:3000') {
+    // Kriteria 2 & Saran 3: Deploy
+    stage('Deploy') {
+        echo "1. Menembakkan perintah Deploy ke Vercel (dari mesin Jenkins)..."
+        // Jenkins menekan remot Vercel menggunakan curl bawaannya
+        sh "curl -X POST https://api.vercel.com/v1/integrations/deploy/prj_K1MDqlQAXMONQc1rr4k3kGZH6ULD/KxH064jBXh"
         
-        stage('Deploy') {
-            echo "1. Menembakkan perintah Deploy ke Vercel..."
-            // Jenkins menekan remot Vercel
-            sh "curl -X POST https://api.vercel.com/v1/integrations/deploy/prj_K1MDqlQAXMONQc1rr4k3kGZH6ULD/KxH064jBXh"
-            
-            echo "2. Melakukan Deployment Lokal (Syarat Kriteria 3)..."
+        // Sesi Docker Kedua: Hanya untuk Deploy Lokal (Kriteria 3)
+        docker.image('node:16-buster-slim').inside('-p 3000:3000') {
+            echo "2. Melakukan Deployment Lokal..."
             sh './jenkins/scripts/deliver.sh'
             
             echo "Aplikasi berjalan. Menjeda pipeline selama 1 menit..."
